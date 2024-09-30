@@ -16,4 +16,8 @@ public class UserService {
     public User findById(UUID userId){
         return this.userRepository.findById(userId).orElseThrow(()->new NotFoundException(userId));
     }
+
+    public User findByEmail(String email){
+        return this.userRepository.findByEmail(email).orElseThrow(()->new NotFoundException(email));
+    }
 }
