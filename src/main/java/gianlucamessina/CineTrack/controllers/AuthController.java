@@ -5,6 +5,7 @@ import gianlucamessina.CineTrack.exceptions.BadRequestException;
 import gianlucamessina.CineTrack.payloads.NewUserDTO;
 import gianlucamessina.CineTrack.payloads.UserLoginDTO;
 import gianlucamessina.CineTrack.payloads.UserLoginRespDTO;
+import gianlucamessina.CineTrack.payloads.UserResponseDTO;
 import gianlucamessina.CineTrack.services.AuthService;
 import gianlucamessina.CineTrack.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public User save(@RequestBody @Validated NewUserDTO payload, BindingResult validation){
+    public UserResponseDTO save(@RequestBody @Validated NewUserDTO payload, BindingResult validation){
         if(validation.hasErrors()){
             String messages=validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
 

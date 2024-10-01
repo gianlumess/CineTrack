@@ -52,7 +52,7 @@ public class UserService {
 
 
     //SAVE DI UN NUOVO USER
-    public User save(NewUserDTO body){
+    public UserResponseDTO save(NewUserDTO body){
         this.userRepository.findByEmail(body.email()).ifPresent(user -> {
             throw  new BadRequestException("L'email: "+body.email()+" è già in uso!");
         });
@@ -63,6 +63,8 @@ public class UserService {
 
         User newUser=new User(body.name(), body.surname(), body.username(), body.email(), bCrypt.encode(body.password()),
                 "https://ui-avatars.com/api/?name="+body.name()+"+"+body.surname(), Role.USER);
-        return this.userRepository.save(newUser);
+        this.userRepository.save(newUser);
+        return new UserResponseDTO(newUser.getId(),newUser.getName(), newUser.getSurname(), newUser.getUsername(),
+                newUser.getEmail(), newUser.getAvatar(), newUser.getCreationDate());
     }
 }
