@@ -1,5 +1,7 @@
 package gianlucamessina.CineTrack.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import gianlucamessina.CineTrack.entities.User;
 import gianlucamessina.CineTrack.enums.Role;
 import gianlucamessina.CineTrack.exceptions.BadRequestException;
@@ -14,7 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,6 +28,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     PasswordEncoder bCrypt;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public User findById(UUID userId){
         return this.userRepository.findById(userId).orElseThrow(()->new NotFoundException(userId));
@@ -93,5 +99,24 @@ public class UserService {
         return new UserResponseDTO(found.getId(), found.getName(), found.getSurname(), found.getUsername(),
                 found.getEmail(), found.getAvatar(), found.getCreationDate());
 
+    }
+
+    //DELETE
+    public void findByIdAndDelete(UUID userId){
+        User found=this.findById(userId);
+        this.userRepository.delete(found);
+    }
+
+    //EDIT AVATAR
+    public UserResponseDTO editAvatarPic(UUID userId, MultipartFile pic) throws IOException {
+        User found=this.findById(userId);
+
+        String url= (String) cloudinary.uploader().upload(pic.getBytes(), ObjectUtils.emptyMap()).get("url");
+        System.out.println("URL : "+url);
+
+        found.setAvatar(url);
+        this.userRepository.save(found);
+        return new UserResponseDTO(found.getId(), found.getName(), found.getSurname(), found.getUsername(),
+                found.getEmail(), found.getAvatar(), found.getCreationDate());
     }
 }

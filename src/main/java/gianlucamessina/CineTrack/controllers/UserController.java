@@ -7,11 +7,14 @@ import gianlucamessina.CineTrack.payloads.UserResponseDTO;
 import gianlucamessina.CineTrack.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -49,5 +52,20 @@ public class UserController {
         }
 
         return this.userService.findByIdAndUpdate(userId,body);
+    }
+
+    //DELETE
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void findByIdAndDelete(@PathVariable UUID userId){
+        this.userService.findByIdAndDelete(userId);
+    }
+
+    //UPDATE AVATAR PIC
+    @PatchMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public UserResponseDTO editAvatarPic(@PathVariable UUID userId, @RequestParam("pic")MultipartFile pic) throws IOException {
+        return this.userService.editAvatarPic(userId,pic);
     }
 }
