@@ -67,4 +67,27 @@ public class UserService {
         return new UserResponseDTO(newUser.getId(),newUser.getName(), newUser.getSurname(), newUser.getUsername(),
                 newUser.getEmail(), newUser.getAvatar(), newUser.getCreationDate());
     }
+
+    //FIND BY ID AND UPDATE
+    public UserResponseDTO findByIdAndUpdate(UUID userId,NewUserDTO body){
+        User found=this.findById(userId);
+        //controllo prima di modificare l'user se email e username sono già utilizzate
+        this.userRepository.findByEmail(body.email()).ifPresent(user -> {
+            throw  new BadRequestException("L'email: "+body.email()+" è già in uso!");
+        });
+        this.userRepository.findByUsername(body.username()).ifPresent(user -> {
+            throw new BadRequestException("L'username: "+body.username()+" è già in uso!");
+        });
+
+        found.setName(body.name());
+        found.setSurname(body.surname());
+        found.setUsername(body.username());
+        found.setEmail(body.email());
+        found.setPassword(bCrypt.encode(body.password()));
+
+        this.userRepository.save(found);
+        return new UserResponseDTO(found.getId(), found.getName(), found.getSurname(), found.getUsername(),
+                found.getEmail(), found.getAvatar(), found.getCreationDate());
+
+    }
 }
