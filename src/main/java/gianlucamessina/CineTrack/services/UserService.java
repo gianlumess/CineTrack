@@ -5,6 +5,7 @@ import gianlucamessina.CineTrack.enums.Role;
 import gianlucamessina.CineTrack.exceptions.BadRequestException;
 import gianlucamessina.CineTrack.exceptions.NotFoundException;
 import gianlucamessina.CineTrack.payloads.NewUserDTO;
+import gianlucamessina.CineTrack.payloads.UserResponseDTO;
 import gianlucamessina.CineTrack.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,12 +33,21 @@ public class UserService {
     }
 
     //FIND ALL CON PAGINAZIONE
-    public Page<User> findAll(int page,int size,String SortBy){
+    public Page<UserResponseDTO> findAll(int page, int size, String SortBy){
         if(page>150)page=150;
 
         Pageable pageable= PageRequest.of(page,size, Sort.by(SortBy));
+        Page<User>userPage=this.userRepository.findAll(pageable);
 
-        return this.userRepository.findAll(pageable);
+        return userPage.map(user -> new UserResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getAvatar(),
+                user.getCreationDate()
+        ));
     }
 
 

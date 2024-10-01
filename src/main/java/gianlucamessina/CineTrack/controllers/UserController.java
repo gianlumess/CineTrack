@@ -1,6 +1,7 @@
 package gianlucamessina.CineTrack.controllers;
 
 import gianlucamessina.CineTrack.entities.User;
+import gianlucamessina.CineTrack.payloads.UserResponseDTO;
 import gianlucamessina.CineTrack.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,9 @@ public class UserController {
     //GET LISTA DI USER
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<User> findAll(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "15") int size,
-                              @RequestParam(defaultValue = "id") String sortBy){
+    public Page<UserResponseDTO> findAll(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "15") int size,
+                                         @RequestParam(defaultValue = "id") String sortBy){
         return this.userService.findAll(page,size,sortBy);
     }
 }
