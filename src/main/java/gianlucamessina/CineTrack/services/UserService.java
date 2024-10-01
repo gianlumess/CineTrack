@@ -7,6 +7,10 @@ import gianlucamessina.CineTrack.exceptions.NotFoundException;
 import gianlucamessina.CineTrack.payloads.NewUserDTO;
 import gianlucamessina.CineTrack.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +31,14 @@ public class UserService {
         return this.userRepository.findByEmail(email).orElseThrow(()->new NotFoundException(email));
     }
 
+    //FIND ALL CON PAGINAZIONE
+    public Page<User> findAll(int page,int size,String SortBy){
+        if(page>150)page=150;
+
+        Pageable pageable= PageRequest.of(page,size, Sort.by(SortBy));
+
+        return this.userRepository.findAll(pageable);
+    }
 
 
     //SAVE DI UN NUOVO USER
