@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -72,12 +73,15 @@ public class UserService {
     public UserResponseDTO findByIdAndUpdate(UUID userId,NewUserDTO body){
         User found=this.findById(userId);
         //controllo prima di modificare l'user se email e username sono già utilizzate
+        if (!Objects.equals(found.getEmail(), body.email())&& !Objects.equals(found.getUsername(), body.username())){
+
         this.userRepository.findByEmail(body.email()).ifPresent(user -> {
             throw  new BadRequestException("L'email: "+body.email()+" è già in uso!");
         });
         this.userRepository.findByUsername(body.username()).ifPresent(user -> {
             throw new BadRequestException("L'username: "+body.username()+" è già in uso!");
         });
+        }
 
         found.setName(body.name());
         found.setSurname(body.surname());
