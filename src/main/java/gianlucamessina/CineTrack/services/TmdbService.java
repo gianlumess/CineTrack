@@ -53,9 +53,9 @@ public class TmdbService {
         ResponseEntity<Map>response=restTemplate.exchange(url,HttpMethod.GET,entity, Map.class);
         return response.getBody();
     }
-
-    public Map<String,Object> getPopularMovies(){
-        String url=UriComponentsBuilder.fromHttpUrl(BASE_URL+"/movie/popular")
+    //TRENDING MOVIES
+    public Map<String,Object> getTrendingMovies(){
+        String url=UriComponentsBuilder.fromHttpUrl(BASE_URL+"/trending/movie/day")
                 .queryParam("language","it-IT")
                 .toUriString();
 
@@ -66,9 +66,9 @@ public class TmdbService {
         ResponseEntity<Map>response=restTemplate.exchange(url,HttpMethod.GET,entity, Map.class);
         return response.getBody();
     }
-
-    public Map<String,Object> getPopularSeries(){
-        String url=UriComponentsBuilder.fromHttpUrl(BASE_URL+"/tv/popular")
+    //TRENDING SERIES
+    public Map<String,Object> getTrendingSeries(){
+        String url=UriComponentsBuilder.fromHttpUrl(BASE_URL+"/trending/tv/day")
                 .queryParam("language","it-IT")
                 .toUriString();
 
@@ -79,4 +79,95 @@ public class TmdbService {
         ResponseEntity<Map>response=restTemplate.exchange(url,HttpMethod.GET,entity, Map.class);
         return response.getBody();
     }
+    //MOVIE DETAILS
+    public Map<String, Object> getMovieDetails(Long movieId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/movie/" + movieId)
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //SERIES DETAILS
+    public Map<String, Object> getSeriesDetails(Long seriesId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/tv/" + seriesId)
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //MOST RATED MOVIES
+    public Map<String, Object> getTopRatedMovies() {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/movie/top_rated")
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //MOST RATED SERIES
+    public Map<String, Object> getTopRatedSeries() {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/tv/top_rated")
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //MOVIE CREDITS
+    public Map<String, Object> getMovieCredits(Long movieId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/movie/" + movieId + "/credits")
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //SERIES CREDITS
+    public Map<String, Object> getSeriesCredits(Long seriesId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/tv/" + seriesId + "/credits")
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+
 }
