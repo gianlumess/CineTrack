@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public User findByEmail(String email){
-        return this.userRepository.findByEmail(email).orElseThrow(()->new NotFoundException(email));
+        return this.userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("Non è stato trovato alcun utente con la email: "+email));
     }
 
     //FIND ALL CON PAGINAZIONE
