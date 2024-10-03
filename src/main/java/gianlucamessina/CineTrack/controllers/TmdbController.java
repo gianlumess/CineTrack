@@ -4,6 +4,7 @@ import gianlucamessina.CineTrack.services.TmdbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -71,6 +72,26 @@ public class TmdbController {
     @GetMapping("/series/{seriesId}/videos")
     public Map<String, Object> getSeriesVideos(@PathVariable long seriesId) {
         return this.tmdbService.getSeriesVideos(seriesId);
+    }
+
+    @GetMapping("/movies/{movieId}/similar")
+    public Map<String, Object> getSimilarMovies(@PathVariable long movieId) {
+        return this.tmdbService.getSimilarMovies(movieId);
+    }
+
+    @GetMapping("/series/{seriesId}/similar")
+    public Map<String, Object> getSimilarSeries(@PathVariable long seriesId) {
+        return this.tmdbService.getSimilarSeries(seriesId);
+    }
+
+    @GetMapping("/movies/search")
+    public Map<String, Object> searchMovie(@RequestParam("query") String query) {
+        return this.tmdbService.searchMovie(query);
+    }
+
+    @GetMapping("series/search")
+    public Map<String, Object> searchSeries(@RequestParam("query") String query) {
+        return this.tmdbService.searchSeries(query);
     }
 
 
