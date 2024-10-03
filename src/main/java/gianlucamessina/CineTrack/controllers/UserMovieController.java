@@ -2,6 +2,8 @@ package gianlucamessina.CineTrack.controllers;
 
 import gianlucamessina.CineTrack.entities.User;
 import gianlucamessina.CineTrack.entities.UserMovie;
+import gianlucamessina.CineTrack.exceptions.BadRequestException;
+import gianlucamessina.CineTrack.payloads.EditShowStatusDTO;
 import gianlucamessina.CineTrack.payloads.NewUserMovieDTO;
 import gianlucamessina.CineTrack.payloads.UserMovieResponseDTO;
 import gianlucamessina.CineTrack.services.UserMovieService;
@@ -10,10 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user_movies")
@@ -33,7 +37,12 @@ public class UserMovieController {
     //SAVE DI UN FILM NELLA LISTA DELL'UTENTE
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserMovieResponseDTO save(@AuthenticationPrincipal User user, @RequestBody @Validated NewUserMovieDTO body) {
+    public UserMovieResponseDTO save(@AuthenticationPrincipal User user, @RequestBody @Validated NewUserMovieDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
+
+            throw new BadRequestException("ci sono stati errori nel payload: " + messages);
+        }
         return this.userMovieService.save(user.getId(), body);
     }
 
@@ -41,5 +50,23 @@ public class UserMovieController {
     @GetMapping("/me")
     public List<UserMovieResponseDTO> findAllMyMovies(@AuthenticationPrincipal User user) {
         return this.userMovieService.findAllMyMovies(user.getId());
+    }
+
+    //DELETE DI UN FILM DALLA LISTA DI UN UTENTE
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMovieFromMyList(@AuthenticationPrincipal User user, @RequestParam("movieId") long movieId) {
+        this.userMovieService.deleteMovieFromMyList(user.getId(), movieId);
+    }
+
+    //EDIT SHOWSTATUS
+    @PatchMapping("/me")
+    public UserMovieResponseDTO editShowStatus(@AuthenticationPrincipal User user, @RequestParam("movieId") long movieId, @RequestBody @Validated EditShowStatusDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
+
+            throw new BadRequestException("ci sono stati errori nel payload: " + messages);
+        }
+        return this.userMovieService.editShowStatus(user.getId(), movieId, body);
     }
 }

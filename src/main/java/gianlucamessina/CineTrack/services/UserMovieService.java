@@ -3,6 +3,9 @@ package gianlucamessina.CineTrack.services;
 import gianlucamessina.CineTrack.entities.User;
 import gianlucamessina.CineTrack.entities.UserMovie;
 import gianlucamessina.CineTrack.enums.ShowStatus;
+import gianlucamessina.CineTrack.exceptions.BadRequestException;
+import gianlucamessina.CineTrack.exceptions.NotFoundException;
+import gianlucamessina.CineTrack.payloads.EditShowStatusDTO;
 import gianlucamessina.CineTrack.payloads.NewUserMovieDTO;
 import gianlucamessina.CineTrack.payloads.UserMovieResponseDTO;
 import gianlucamessina.CineTrack.repositories.UserMovieRepository;
@@ -46,14 +49,42 @@ public class UserMovieService {
         )).collect(Collectors.toList());
     }
 
+    //FIND MOVIE BY ID
+    public UserMovie findMovieByIdInMyList(UUID userId, long movieId) {
+        return this.userMovieRepository.findByUserIdAndMovieId(userId, movieId).orElseThrow(() -> new NotFoundException("Il film con ID: " + movieId + " non è presente nella tua lista!"));
+    }
+
     //SAVE DI UN FILM ALLA LISTA DI UN UTENTE
     public UserMovieResponseDTO save(UUID userId, NewUserMovieDTO body) {
         User found = this.userService.findById(userId);
+        //mi assicuro che il film che l'utente vuole salvare nella sua lista non sia già presente
+        this.userMovieRepository.findByUserIdAndMovieId(userId, body.movieId()).ifPresent(userMovie -> {
+            throw new BadRequestException("Il film è già presente nella tua lista!");
+        });
 
         UserMovie newUserMovie = new UserMovie(ShowStatus.valueOf(body.showStatus()), found, body.movieId());
         this.userMovieRepository.save(newUserMovie);
         return new UserMovieResponseDTO(newUserMovie.getId(), newUserMovie.getShowStatus(), userId, newUserMovie.getMovieId(),
                 newUserMovie.getDateAddedToList());
 
+    }
+
+    //DELETE DI UN FILM NELLA LISTA DELL'UTENTE
+    public void deleteMovieFromMyList(UUID userId, long movieId) {
+        User found = this.userService.findById(userId);
+
+        UserMovie foundMovie = this.findMovieByIdInMyList(userId, movieId);
+
+        this.userMovieRepository.delete(foundMovie);
+    }
+
+    //EDIT SHOWSTATUS
+    public UserMovieResponseDTO editShowStatus(UUID userId, long movieId, EditShowStatusDTO body) {
+        this.userService.findById(userId);
+        UserMovie foundMovie = this.findMovieByIdInMyList(userId, movieId);
+
+        foundMovie.setShowStatus(ShowStatus.valueOf(body.showStatus()));
+        return new UserMovieResponseDTO(foundMovie.getId(), foundMovie.getShowStatus(), foundMovie.getUser().getId(),
+                foundMovie.getMovieId(), foundMovie.getDateAddedToList());
     }
 }

@@ -30,14 +30,14 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public Page<UserResponseDTO> findAll(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "15") int size,
-                                         @RequestParam(defaultValue = "id") String sortBy){
-        return this.userService.findAll(page,size,sortBy);
+                                         @RequestParam(defaultValue = "id") String sortBy) {
+        return this.userService.findAll(page, size, sortBy);
     }
 
     //GET FIND BY ID
     @GetMapping("/{userId}")
-    public UserResponseDTO findById(@PathVariable UUID userId){
-        User found=this.userService.findById(userId);
+    public UserResponseDTO findById(@PathVariable UUID userId) {
+        User found = this.userService.findById(userId);
         return new UserResponseDTO(found.getId(), found.getName(), found.getSurname(), found.getUsername(),
                 found.getEmail(), found.getAvatar(), found.getCreationDate());
     }
@@ -45,51 +45,56 @@ public class UserController {
     //FIND BY ID AND UPDATE
     @PutMapping("/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserResponseDTO findByIdAndUpdate(@PathVariable UUID userId, @RequestBody @Validated NewUserDTO body, BindingResult validation){
-        if(validation.hasErrors()){
-            String messages=validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
+    public UserResponseDTO findByIdAndUpdate(@PathVariable UUID userId, @RequestBody @Validated NewUserDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
 
-            throw new BadRequestException("ci sono stati errori nel payload: "+messages);
+            throw new BadRequestException("ci sono stati errori nel payload: " + messages);
         }
 
-        return this.userService.findByIdAndUpdate(userId,body);
+        return this.userService.findByIdAndUpdate(userId, body);
     }
 
     //DELETE
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void findByIdAndDelete(@PathVariable UUID userId){
+    public void findByIdAndDelete(@PathVariable UUID userId) {
         this.userService.findByIdAndDelete(userId);
     }
 
     //UPDATE AVATAR PIC
     @PatchMapping("/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserResponseDTO editAvatarPic(@PathVariable UUID userId, @RequestParam("pic")MultipartFile pic) throws IOException {
-        return this.userService.editAvatarPic(userId,pic);
+    public UserResponseDTO editAvatarPic(@PathVariable UUID userId, @RequestParam("pic") MultipartFile pic) throws IOException {
+        return this.userService.editAvatarPic(userId, pic);
     }
 
     //ENDPOINTS ACCESSIBILI ESCLUSIVAMENTE APPARTENENTI A CHI EFFETTUA LA RICHIESTA
     @GetMapping("/me")
-    public UserResponseDTO getMyProfile(@AuthenticationPrincipal User user){
+    public UserResponseDTO getMyProfile(@AuthenticationPrincipal User user) {
         return new UserResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getUsername(),
                 user.getEmail(), user.getAvatar(), user.getCreationDate());
     }
 
     @PutMapping("/me")
-    public UserResponseDTO updateMyProfile(@AuthenticationPrincipal User user,@RequestBody @Validated NewUserDTO body){
-        return this.userService.findByIdAndUpdate(user.getId(),body);
+    public UserResponseDTO updateMyProfile(@AuthenticationPrincipal User user, @RequestBody @Validated NewUserDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
+
+            throw new BadRequestException("ci sono stati errori nel payload: " + messages);
+        }
+        return this.userService.findByIdAndUpdate(user.getId(), body);
     }
 
     @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMyProfile(@AuthenticationPrincipal User user){
+    public void deleteMyProfile(@AuthenticationPrincipal User user) {
         this.userService.findByIdAndDelete(user.getId());
     }
 
     @PatchMapping("/me")
-    public UserResponseDTO editMyAvatar(@AuthenticationPrincipal User user,@RequestParam("pic")MultipartFile pic) throws IOException {
-        return this.userService.editAvatarPic(user.getId(),pic);
+    public UserResponseDTO editMyAvatar(@AuthenticationPrincipal User user, @RequestParam("pic") MultipartFile pic) throws IOException {
+        return this.userService.editAvatarPic(user.getId(), pic);
     }
 }
