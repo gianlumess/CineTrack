@@ -169,5 +169,63 @@ public class TmdbService {
         return response.getBody();
     }
 
+    //MOVIE IMAGES
+    public Map<String, Object> getMovieImages(Long movieId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/movie/" + movieId + "/images")
+                .queryParam("language", "it-IT")
+                .toUriString();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //SERIES IMAGES
+    public Map<String, Object> getSeriesImages(Long seriesId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/tv/" + seriesId + "/images")
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //MOVIE VIDEOS
+    public Map<String, Object> getMovieVideos(Long movieId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/movie/" + movieId + "/videos")
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
+
+    //SERIES VIDEOS
+    public Map<String, Object> getSeriesVideos(Long seriesId) {
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/tv/" + seriesId + "/videos")
+                .queryParam("language", "it-IT")
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        return response.getBody();
+    }
 }
