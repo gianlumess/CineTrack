@@ -37,11 +37,11 @@ public class RatingService {
     }
 
     //SAVE DI UN RATING
-    public RatingResponseDTO save(NewRatingDTO body) {
-        User foundUser = this.userService.findById(UUID.fromString(body.userId()));
+    public RatingResponseDTO save(UUID userId, NewRatingDTO body) {
+        User foundUser = this.userService.findById(userId);
 
         // controllo se esiste già una valutazione per lo stesso showId e userId
-        Rating existingRating = this.findByUserIdAndShowId(UUID.fromString(body.userId()), body.showId());
+        Rating existingRating = this.findByUserIdAndShowId(userId, body.showId());
 
         if (existingRating != null) {
             // Aggiorna la valutazione e la data
