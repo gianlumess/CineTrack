@@ -2,6 +2,7 @@ package gianlucamessina.CineTrack.controllers;
 
 import gianlucamessina.CineTrack.entities.User;
 import gianlucamessina.CineTrack.entities.UserSeries;
+import gianlucamessina.CineTrack.enums.ShowStatus;
 import gianlucamessina.CineTrack.exceptions.BadRequestException;
 import gianlucamessina.CineTrack.payloads.EditShowStatusDTO;
 import gianlucamessina.CineTrack.payloads.NewUserSeriesDTO;
@@ -50,6 +51,12 @@ public class UserSeriesController {
     @GetMapping("/me")
     public List<UserSeriesResponseDTO> findAllMySeries(@AuthenticationPrincipal User user) {
         return this.userSeriesService.findAllMySeries(user.getId());
+    }
+
+    //GET MOVIES LIST BY SHOW STATUS
+    @GetMapping("/me/status")
+    public List<UserSeriesResponseDTO> findByUserIdAndShowStatus(@AuthenticationPrincipal User user, @RequestParam("showStatus") ShowStatus showStatus) {
+        return this.userSeriesService.findByUserIdAndShowStatus(user.getId(), showStatus);
     }
 
     //DELETE DI UNA SERIE DALLA LISTA DI UN UTENTE

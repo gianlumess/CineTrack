@@ -87,4 +87,19 @@ public class UserMovieService {
         return new UserMovieResponseDTO(foundMovie.getId(), foundMovie.getShowStatus(), foundMovie.getUser().getId(),
                 foundMovie.getMovieId(), foundMovie.getDateAddedToList());
     }
+
+    //FIND MOVIES BY USER ID AND SHOW STATUS
+    public List<UserMovieResponseDTO> findByUserIdAndShowStatus(UUID userId, ShowStatus showStatus) {
+        User found = this.userService.findById(userId);
+
+        List<UserMovie> userMovieList = this.userMovieRepository.findByUserIdAndShowStatus(userId, showStatus);
+
+        return userMovieList.stream().map(userMovie -> new UserMovieResponseDTO(
+                userMovie.getId(),
+                userMovie.getShowStatus(),
+                userMovie.getUser().getId(),
+                userMovie.getMovieId(),
+                userMovie.getDateAddedToList()
+        )).collect(Collectors.toList());
+    }
 }

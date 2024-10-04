@@ -87,4 +87,19 @@ public class UserSeriesService {
         return new UserSeriesResponseDTO(foundSeries.getId(), foundSeries.getShowStatus(), foundSeries.getUser().getId(),
                 foundSeries.getSeriesId(), foundSeries.getDateAddedToList());
     }
+
+    //FIND SERIES BY USER ID AND SHOW STATUS
+    public List<UserSeriesResponseDTO> findByUserIdAndShowStatus(UUID userId, ShowStatus showStatus) {
+        User found = this.userService.findById(userId);
+
+        List<UserSeries> userSeriesList = this.userSeriesRepository.findByUserIdAndShowStatus(userId, showStatus);
+
+        return userSeriesList.stream().map(userSeries -> new UserSeriesResponseDTO(
+                userSeries.getId(),
+                userSeries.getShowStatus(),
+                userSeries.getUser().getId(),
+                userSeries.getSeriesId(),
+                userSeries.getDateAddedToList()
+        )).collect(Collectors.toList());
+    }
 }

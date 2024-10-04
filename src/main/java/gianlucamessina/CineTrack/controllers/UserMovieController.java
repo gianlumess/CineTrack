@@ -2,6 +2,7 @@ package gianlucamessina.CineTrack.controllers;
 
 import gianlucamessina.CineTrack.entities.User;
 import gianlucamessina.CineTrack.entities.UserMovie;
+import gianlucamessina.CineTrack.enums.ShowStatus;
 import gianlucamessina.CineTrack.exceptions.BadRequestException;
 import gianlucamessina.CineTrack.payloads.EditShowStatusDTO;
 import gianlucamessina.CineTrack.payloads.NewUserMovieDTO;
@@ -52,6 +53,12 @@ public class UserMovieController {
         return this.userMovieService.findAllMyMovies(user.getId());
     }
 
+    //GET MOVIES LIST BY SHOW STATUS
+    @GetMapping("/me/status")
+    public List<UserMovieResponseDTO> findByUserIdAndShowStatus(@AuthenticationPrincipal User user, @RequestParam("showStatus") ShowStatus showStatus) {
+        return this.userMovieService.findByUserIdAndShowStatus(user.getId(), showStatus);
+    }
+
     //DELETE DI UN FILM DALLA LISTA DI UN UTENTE
     @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -69,4 +76,6 @@ public class UserMovieController {
         }
         return this.userMovieService.editShowStatus(user.getId(), movieId, body);
     }
+
+
 }
