@@ -28,7 +28,7 @@ public class RatingService {
         return this.ratingRepository.findByUserId(userId);
     }
 
-    //FIND RATING BY ID
+    //FIND RATING BY USER ID AND SHOW ID
     public Rating findByUserIdAndShowId(UUID userId, long showId) {
         this.userService.findById(userId);
 

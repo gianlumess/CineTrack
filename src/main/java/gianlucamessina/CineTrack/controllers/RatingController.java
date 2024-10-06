@@ -33,8 +33,9 @@ public class RatingController {
 
     //GET RATING OF A SPECIFIC SHOW
     @GetMapping("/me/{showId}")
-    public Rating getMyRatingByShowId(@AuthenticationPrincipal User user, @PathVariable long showId) {
-        return this.ratingService.findByUserIdAndShowId(user.getId(), showId);
+    public RatingResponseDTO getMyRatingByShowId(@AuthenticationPrincipal User user, @PathVariable long showId) {
+        Rating found = this.ratingService.findByUserIdAndShowId(user.getId(), showId);
+        return new RatingResponseDTO(found.getId(), found.getRating(), found.getShowId(), user.getId(), found.getDateRating());
     }
 
     //SAVE
