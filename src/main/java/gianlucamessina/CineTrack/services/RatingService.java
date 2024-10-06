@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,23 +38,27 @@ public class RatingService {
     }
 
     //SAVE DI UN RATING
-    public RatingResponseDTO save(UUID userId, NewRatingDTO body) {
+    public RatingResponseDTO save(UUID userId, long showId, NewRatingDTO body) {
         User foundUser = this.userService.findById(userId);
 
         // controllo se esiste già una valutazione per lo stesso showId e userId
-        Rating existingRating = this.findByUserIdAndShowId(userId, body.showId());
+        Optional<Rating> existingRating = this.ratingRepository.findByUserIdAndShowId(userId, showId);
 
-        if (existingRating != null) {
+        if (existingRating.isPresent()) {
             // Aggiorna la valutazione e la data
-            existingRating.setRating(body.rating());
-            existingRating.setDateRating(LocalDate.now());
-            this.ratingRepository.save(existingRating);
-            return new RatingResponseDTO(existingRating.getId(),
-                    existingRating.getRating(), existingRating.getShowId(),
-                    existingRating.getUser().getId(), existingRating.getDateRating());
+            Rating ratingToUpdate = existingRating.get();
+
+            ratingToUpdate.setRating(body.rating());
+            ratingToUpdate.setDateRating(LocalDate.now());
+            this.ratingRepository.save(ratingToUpdate);
+
+            return new RatingResponseDTO(ratingToUpdate.getId(),
+                    ratingToUpdate.getRating(), ratingToUpdate.getShowId(),
+                    ratingToUpdate.getUser().getId(), ratingToUpdate.getDateRating());
         } else {
             // Crea una nuova valutazione
-            Rating newRating = new Rating(body.rating(), body.showId(), foundUser);
+            Rating newRating = new Rating(body.rating(), showId, foundUser);
+            this.ratingRepository.save(newRating);
             return new RatingResponseDTO(newRating.getId(),
                     newRating.getRating(), newRating.getShowId(),
                     newRating.getUser().getId(), newRating.getDateRating());

@@ -1,11 +1,11 @@
 package gianlucamessina.CineTrack.payloads;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 public record NewRatingDTO(@NotNull(message = "Il voto è obbligatorio!")
-                           @Size(min = 1, max = 5, message = "il voto deve essere compreso da 1 a 5!")
-                           int rating,
-                           @NotNull(message = "devi inserire l'id dello show da valutare(movie/series)!")
-                           long showId) {
+                           @Min(value = 1, message = "La valutazione minima è 1")
+                           @Max(value = 5, message = "La valutazione massima è 5")
+                           int rating) {
 }

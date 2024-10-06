@@ -38,15 +38,15 @@ public class RatingController {
     }
 
     //SAVE
-    @PostMapping("/me")
+    @PostMapping("/me/{showId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public RatingResponseDTO save(@AuthenticationPrincipal User user, @RequestBody @Validated NewRatingDTO body, BindingResult validation) {
+    public RatingResponseDTO save(@AuthenticationPrincipal User user, @PathVariable long showId, @RequestBody @Validated NewRatingDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
 
             throw new BadRequestException("ci sono stati errori nel payload: " + messages);
         }
-        return this.ratingService.save(user.getId(), body);
+        return this.ratingService.save(user.getId(), showId, body);
     }
 
     //DELETE
