@@ -55,9 +55,11 @@ public class TmdbService {
     }
 
     //TRENDING MOVIES
-    public Map<String, Object> getTrendingMovies() {
+    public Map<String, Object> getTrendingMovies(Integer page) {
+
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/trending/movie/day")
                 .queryParam("language", "it-IT")
+                .queryParam("page", page)
                 .toUriString();
 
         HttpHeaders headers = new HttpHeaders();
@@ -69,9 +71,11 @@ public class TmdbService {
     }
 
     //TRENDING SERIES
-    public Map<String, Object> getTrendingSeries() {
+    public Map<String, Object> getTrendingSeries(Integer page) {
+
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/trending/tv/day")
                 .queryParam("language", "it-IT")
+                .queryParam("page", page)
                 .toUriString();
 
         HttpHeaders headers = new HttpHeaders();
@@ -113,9 +117,11 @@ public class TmdbService {
     }
 
     //MOST RATED MOVIES
-    public Map<String, Object> getTopRatedMovies() {
+    public Map<String, Object> getTopRatedMovies(Integer page) {
+
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/movie/top_rated")
                 .queryParam("language", "it-IT")
+                .queryParam("page", page)
                 .toUriString();
 
         HttpHeaders headers = new HttpHeaders();
@@ -128,9 +134,11 @@ public class TmdbService {
     }
 
     //MOST RATED SERIES
-    public Map<String, Object> getTopRatedSeries() {
+    public Map<String, Object> getTopRatedSeries(Integer page) {
+        
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/tv/top_rated")
                 .queryParam("language", "it-IT")
+                .queryParam("page", page)
                 .toUriString();
 
         HttpHeaders headers = new HttpHeaders();

@@ -15,13 +15,13 @@ public class TmdbController {
     private TmdbService tmdbService;
 
     @GetMapping("/movies/trending")
-    public Map<String, Object> getTrendingMovies() {
-        return this.tmdbService.getTrendingMovies();
+    public Map<String, Object> getTrendingMovies(@RequestParam(defaultValue = "1") Integer page) {
+        return this.tmdbService.getTrendingMovies(page);
     }
 
     @GetMapping("/series/trending")
-    public Map<String, Object> getTrendingSeries() {
-        return this.tmdbService.getTrendingSeries();
+    public Map<String, Object> getTrendingSeries(@RequestParam(defaultValue = "1") Integer page) {
+        return this.tmdbService.getTrendingSeries(page);
     }
 
     @GetMapping("/movies/{movieId}")
@@ -35,13 +35,13 @@ public class TmdbController {
     }
 
     @GetMapping("/movies/top_rated")
-    public Map<String, Object> getTopRatedMovies() {
-        return this.tmdbService.getTopRatedMovies();
+    public Map<String, Object> getTopRatedMovies(@RequestParam(defaultValue = "1") Integer page) {
+        return this.tmdbService.getTopRatedMovies(page);
     }
 
     @GetMapping("/series/top_rated")
-    public Map<String, Object> getTopRatedSeries() {
-        return this.tmdbService.getTopRatedSeries();
+    public Map<String, Object> getTopRatedSeries(@RequestParam(defaultValue = "1") Integer page) {
+        return this.tmdbService.getTopRatedSeries(page);
     }
 
     @GetMapping("/movies/{movieId}/credits")
